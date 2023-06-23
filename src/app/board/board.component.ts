@@ -26,10 +26,31 @@ export class BoardComponent {
       date: new Date
     }
   ];
+  contentInput:string = '';
+  titleInput:string = '';
+  isShowEdit = false;
 
   ngOnInit(): void {
 
 
+  }
+
+  createMessage(){
+    this.isShowEdit = true;
+    this.titleInput='';
+    this.contentInput='';
+  }
+
+  confirm(){
+    if(this.titleInput== ''||this.contentInput== ''){
+      return;
+    }
+     this.messageList.unshift({
+      title: this.titleInput,
+      content: this.contentInput,
+      date: new Date
+     });
+     this.isShowEdit = false;
   }
 
 
