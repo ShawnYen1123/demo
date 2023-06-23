@@ -1,0 +1,10 @@
+<div>
+  <h1>留言板</h1>
+<p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}}" *ngFor="let item of messageList">
+  <p>
+     {{item.content}}
+  </p>
+</p-panel>
+
+<p-button label="新增留言"></p-button>
+</div>
