@@ -9,35 +9,19 @@ import { MessageService } from 'primeng/api';
   providers:[MessageService]
 })
 export class BoardComponent {
-  content: string = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero ';
   date: Date = new Date;
-  messageList: Message[] = [
-    {
-      title:'標題一',
-      content: '標題一內容標題一內容標題一內容標題一內容標題一內容標題一內容標題一內容標題一內容',
-      date: new Date
-    },
-    {
-      title:'標題二',
-      content: '標題二內容標題二內容標題二內容標題二內容標題二內容標題二內容標題二內容標題二內容',
-      date: new Date
-    },
-    {
-      title:'標題三',
-      content: '標題三內容標題三內容標題三內容標題三內容標題三內容標題三內容標題三內容標題三內容標題三內容',
-      date: new Date
-    }
-  ];
+  messageList: Message[] = [];
   contentInput:string = '';
   titleInput:string = '';
   isCreate = false;
   isEdit = false;
   editIndex = -1;
+  stringFromBrowser = '';
 
   constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
-
+     this.getDataFromBrowser();
 
   }
 
@@ -60,6 +44,7 @@ export class BoardComponent {
      });
      this.isCreate = false;
      this.showToast('success','留言新增成功');
+     this.setDataToBrowser();
   }
 
   cancel(){
@@ -90,11 +75,25 @@ export class BoardComponent {
     this.messageList[this.editIndex].title = this.titleInput;
     this.isEdit = false;
     this.showToast('success','留言編輯成功');
+    this.setDataToBrowser();
   }
 
   deleteMessage(index:number){
     this.messageList.splice(index, 1);
+    this.setDataToBrowser();
   }
 
+  setDataToBrowser(){
+    let data = JSON.stringify(this.messageList);
+    localStorage.setItem('message',data);
+  }
+
+  getDataFromBrowser(){
+    const data = localStorage.getItem('message');
+    if (data !== null) {
+     const messageList = JSON.parse(data);
+      this.messageList= messageList;
+    }
+  }
 
 }
