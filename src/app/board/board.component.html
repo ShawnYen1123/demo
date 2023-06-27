@@ -1,30 +1,79 @@
 <div>
   <h1>留言板</h1>
-  <div>
-    <p-button label="新增留言" (onClick)="createMessage()"></p-button>
+  <div class="margin">
+    <p-button label="新增留言" (onClick)="createMessage()" *ngIf="!isCreate"></p-button>
   </div>
-  <div *ngIf="isShowEdit">
+  <div *ngIf="isCreate" class="margin">
     <h3>新增標題</h3>
+    <input type="text" placeholder="在此新增標題" pInputText [(ngModel)]="titleInput" />
+  </div>
+  <div *ngIf="isCreate">
+    <h3>新增內容</h3>
+    <textarea rows="5" cols="100"  placeholder="在此新增內容" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+  </div>
+  <div *ngIf="isCreate">
+    <h3>預覽</h3>
+    <p-panel header="{{titleInput}}" *ngIf="isCreate">
+      <p>
+         {{contentInput}}
+      </p>
+    </p-panel>
+  </div>
+
+  <div *ngIf="isCreate" class="margin" >
+    <span style="margin: 10px;">
+      <p-button label="取消" (onClick)="cancel()" styleClass="p-button-warning"></p-button>
+    </span>
+    <span style="margin: 10px;">
+      <p-button label="確認新增" (onClick)="confirm()" ></p-button>
+    </span>
+  </div>
+
+
+  <div *ngIf="isEdit" class="margin">
+    <h3>編輯標題</h3>
     <input type="text" pInputText [(ngModel)]="titleInput" />
   </div>
-  <div *ngIf="isShowEdit">
-    <h3>新增內容</h3>
-    <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="contentInput"></textarea>
+  <div *ngIf="isEdit">
+    <h3>編輯內容</h3>
+    <textarea rows="5" cols="100"  class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+  </div>
+  <div *ngIf="isEdit">
+    <h3>預覽</h3>
+    <p-panel header="{{titleInput}}" *ngIf="isEdit">
+      <p>
+         {{contentInput}}
+      </p>
+    </p-panel>
   </div>
 
-  <p-panel header="{{titleInput}}" *ngIf="isShowEdit">
-    <p>
-       {{contentInput}}
-    </p>
-  </p-panel>
+  <div *ngIf="isEdit" class="margin" >
+    <span style="margin: 10px;">
+      <p-button label="取消" (onClick)="cancel()" styleClass="p-button-warning"></p-button>
+    </span>
+    <span style="margin: 10px;">
+      <p-button label="確認修改" (onClick)="confirmEdit()" ></p-button>
+    </span>
+  </div>
 
-  <div *ngIf="isShowEdit">
-    <p-button label="確認新增" (onClick)="confirm()"></p-button>
+  <div style="height: 30px;">
+  </div>
+  <ng-container *ngFor="let item of messageList; let i = index">
+    <p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}}">
+    <p>
+      {{item.content}}
+    </p>
+    <div style="text-align:right">
+      <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px;" (click)="edit(i)"></i>
+      <i class="pi pi-trash" style="font-size: 1rem"  (click)="deleteMessage(i)"></i>
     </div>
-<p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}}" *ngFor="let item of messageList">
-  <p>
-     {{item.content}}
-  </p>
-</p-panel>
+    </p-panel>
+    <div style="height: 20px;">
+    </div>
+  </ng-container>
+
+
 
 </div>
+
+<p-toast></p-toast>

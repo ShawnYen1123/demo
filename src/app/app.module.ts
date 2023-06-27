@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule } from '@angular/forms'
+import { ToastModule } from 'primeng/toast';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -29,7 +30,8 @@ import { BoardComponent } from './board/board.component';
     BrowserAnimationsModule,
     InputTextModule,
     InputTextareaModule,
-    FormsModule
+    FormsModule,
+    ToastModule
   ],
   providers: [],
   bootstrap: [AppComponent]

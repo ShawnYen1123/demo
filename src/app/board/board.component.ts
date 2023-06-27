@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { Message } from './BoardInterface';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-board',
   templateUrl: './board.component.html',
-  styleUrls: ['./board.component.css']
+  styleUrls: ['./board.component.css'],
+  providers:[MessageService]
 })
 export class BoardComponent {
   content: string = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam repellat libero ';
@@ -28,7 +30,11 @@ export class BoardComponent {
   ];
   contentInput:string = '';
   titleInput:string = '';
-  isShowEdit = false;
+  isCreate = false;
+  isEdit = false;
+  editIndex = -1;
+
+  constructor(private messageService: MessageService) {}
 
   ngOnInit(): void {
 
@@ -36,13 +42,15 @@ export class BoardComponent {
   }
 
   createMessage(){
-    this.isShowEdit = true;
+    this.isEdit=false;
+    this.isCreate = true;
     this.titleInput='';
     this.contentInput='';
   }
 
   confirm(){
-    if(this.titleInput== ''||this.contentInput== ''){
+    if(this.titleInput.trim()== ''||this.contentInput.trim()== ''){
+      this.showToast('info','標題及內容不得為空白');
       return;
     }
      this.messageList.unshift({
@@ -50,7 +58,42 @@ export class BoardComponent {
       content: this.contentInput,
       date: new Date
      });
-     this.isShowEdit = false;
+     this.isCreate = false;
+     this.showToast('success','留言新增成功');
+  }
+
+  cancel(){
+    this.isCreate = false;
+    this.isEdit = false;
+    this.titleInput='';
+    this.contentInput='';
+  }
+
+  showToast(type:string, content: string){
+    this.messageService.add({ severity: type, summary: 'Success', detail: content });
+  }
+
+  edit(index:number){
+    this.isEdit = true;
+    this.titleInput=this.messageList[index].title;
+    this.contentInput=this.messageList[index].content;
+    this.editIndex = index;
+  }
+
+  confirmEdit(){
+    if(this.titleInput.trim()== ''||this.contentInput.trim()== ''){
+      this.showToast('info','標題及內容不得為空白');
+      return;
+    }
+    this.messageList[this.editIndex].content = this.contentInput;
+    this.messageList[this.editIndex].date = new Date;
+    this.messageList[this.editIndex].title = this.titleInput;
+    this.isEdit = false;
+    this.showToast('success','留言編輯成功');
+  }
+
+  deleteMessage(index:number){
+    this.messageList.splice(index, 1);
   }
 
 
