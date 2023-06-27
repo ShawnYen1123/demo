@@ -1,4 +1,4 @@
-<div>
+<div class="card flex justify-content-center">
   <h1>留言板</h1>
   <div class="margin">
     <p-button label="新增留言" (onClick)="createMessage()" *ngIf="!isCreate"></p-button>
@@ -9,7 +9,7 @@
   </div>
   <div *ngIf="isCreate">
     <h3>新增內容</h3>
-    <textarea rows="5" cols="100"  placeholder="在此新增內容" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+    <textarea rows="5" cols="50"  placeholder="在此新增內容" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
   </div>
   <div *ngIf="isCreate">
     <h3>預覽</h3>
@@ -36,7 +36,7 @@
   </div>
   <div *ngIf="isEdit">
     <h3>編輯內容</h3>
-    <textarea rows="5" cols="100"  class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+    <textarea rows="5" cols="50"  class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
   </div>
   <div *ngIf="isEdit">
     <h3>預覽</h3>
@@ -64,8 +64,8 @@
       {{item.content}}
     </p>
     <div style="text-align:right">
-      <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px;" (click)="edit(i)"></i>
-      <i class="pi pi-trash" style="font-size: 1rem"  (click)="deleteMessage(i)"></i>
+      <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px; cursor: pointer;" (click)="edit(i)"></i>
+      <i class="pi pi-trash" style="font-size: 1rem"  style="cursor: pointer;" (click)="deleteMessage(i)"></i>
     </div>
     </p-panel>
     <div style="height: 20px;">
