@@ -9,6 +9,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { FormsModule } from '@angular/forms'
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+import { MenuModule } from 'primeng/menu';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -31,7 +33,9 @@ import { BoardComponent } from './board/board.component';
     InputTextModule,
     InputTextareaModule,
     FormsModule,
-    ToastModule
+    ToastModule,
+    TooltipModule,
+    MenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]

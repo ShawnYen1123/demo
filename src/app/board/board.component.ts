@@ -80,6 +80,7 @@ export class BoardComponent {
 
   deleteMessage(index:number){
     this.messageList.splice(index, 1);
+    this.showToast('success','留言刪除成功');
     this.setDataToBrowser();
   }
 
