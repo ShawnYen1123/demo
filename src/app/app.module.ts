@@ -11,16 +11,19 @@ import { FormsModule } from '@angular/forms'
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
+import { TabMenuModule } from 'primeng/tabmenu';
 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
+import { IndexComponent } from './index/index.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BoardComponent
+    BoardComponent,
+    IndexComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { BoardComponent } from './board/board.component';
     FormsModule,
     ToastModule,
     TooltipModule,
-    MenuModule
+    MenuModule,
+    TabMenuModule
   ],
   providers: [],
   bootstrap: [AppComponent]
