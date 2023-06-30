@@ -12,12 +12,14 @@ import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
 import { TabMenuModule } from 'primeng/tabmenu';
+import { PaginatorModule } from 'primeng/paginator';
 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { IndexComponent } from './index/index.component';
+
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import { IndexComponent } from './index/index.component';
     ToastModule,
     TooltipModule,
     MenuModule,
-    TabMenuModule
+    TabMenuModule,
+    PaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

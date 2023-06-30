@@ -9,23 +9,23 @@
   </div>
   <div *ngIf="isCreate">
     <h3>新增內容</h3>
-    <textarea rows="5"  placeholder="在此新增內容" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+    <textarea rows="5" placeholder="在此新增內容" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
   </div>
   <div *ngIf="isCreate">
     <h3>預覽</h3>
     <p-panel header="{{titleInput}}" *ngIf="isCreate">
       <p>
-         {{contentInput}}
+        {{contentInput}}
       </p>
     </p-panel>
   </div>
 
-  <div *ngIf="isCreate" class="margin" >
+  <div *ngIf="isCreate" class="margin">
     <span style="margin: 10px;">
       <p-button label="取消" (onClick)="cancel()" styleClass="p-button-warning"></p-button>
     </span>
     <span style="margin: 10px;">
-      <p-button label="確認新增" (onClick)="confirm()" ></p-button>
+      <p-button label="確認新增" (onClick)="confirm()"></p-button>
     </span>
   </div>
 
@@ -36,41 +36,46 @@
   </div>
   <div *ngIf="isEdit">
     <h3>編輯內容</h3>
-    <textarea rows="5"  class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
+    <textarea rows="5" class="margin" pInputTextarea [(ngModel)]="contentInput"></textarea>
   </div>
   <div *ngIf="isEdit">
     <h3>預覽</h3>
     <p-panel header="{{titleInput}}" *ngIf="isEdit">
       <p>
-         {{contentInput}}
+        {{contentInput}}
       </p>
     </p-panel>
   </div>
 
-  <div *ngIf="isEdit" class="margin" >
+  <div *ngIf="isEdit" class="margin">
     <span style="margin: 10px;">
       <p-button label="取消" (onClick)="cancel()" styleClass="p-button-warning"></p-button>
     </span>
     <span style="margin: 10px;">
-      <p-button label="確認修改" (onClick)="confirmEdit()" ></p-button>
+      <p-button label="確認修改" (onClick)="confirmEdit()"></p-button>
     </span>
   </div>
 
   <div style="height: 30px;">
   </div>
-  <ng-container *ngFor="let item of messageList; let i = index">
+  <ng-container *ngFor="let item of messageListForShow; let i = index">
     <p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}}">
-    <p>
-      {{item.content}}
-    </p>
-    <div style="text-align:right">
-      <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px; cursor: pointer;" (click)="edit(i)" pTooltip="編輯"></i>
-      <i class="pi pi-trash" style="font-size: 1rem"  style="cursor: pointer;" (click)="deleteMessage(i)" pTooltip="刪除"></i>
-    </div>
+      <p>
+        {{item.content}}
+      </p>
+      <div style="text-align:right">
+        <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px; cursor: pointer;" (click)="edit(i)"
+          pTooltip="編輯"></i>
+        <i class="pi pi-trash" style="font-size: 1rem" style="cursor: pointer;" (click)="deleteMessage(i)"
+          pTooltip="刪除"></i>
+      </div>
     </p-panel>
     <div style="height: 20px;">
     </div>
   </ng-container>
+  <div class="card flex justify-content-center">
+    <p-paginator (onPageChange)="onPageChange($event)" [first]="pageData.first" [rows]="pageData.rows" [totalRecords]="messageList.length"></p-paginator>
+  </div>
 
 
 
