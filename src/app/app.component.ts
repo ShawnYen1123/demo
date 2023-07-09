@@ -17,16 +17,18 @@ export class AppComponent {
     this.items = [
       { label: '首頁', icon: 'pi pi-fw pi-home' },
       { label: '留言板', icon: 'pi pi-fw pi-calendar' },
+      { label: '股票', icon: 'pi pi-fw pi-chart-line' }
     ];
   }
 
   onActiveItemChange(eve: MenuItem){
     this.activeItem = eve;
-    console.log(this.activeItem);
     if(this.activeItem.label === '首頁'){
       this.router.navigate(['']);
     }else if(this.activeItem.label === '留言板'){
       this.router.navigate(['board']);
+    }else if(this.activeItem.label === '股票'){
+      this.router.navigate(['stock']);
     }
   }
 }

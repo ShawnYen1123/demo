@@ -13,22 +13,29 @@ import { TooltipModule } from 'primeng/tooltip';
 import { MenuModule } from 'primeng/menu';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { PaginatorModule } from 'primeng/paginator';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TableModule } from 'primeng/table';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { IndexComponent } from './index/index.component';
+import { StockComponent } from './stock/stock.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardComponent,
-    IndexComponent
+    IndexComponent,
+    StockComponent
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ButtonModule,
     PanelModule,
@@ -42,7 +49,10 @@ import { IndexComponent } from './index/index.component';
     TooltipModule,
     MenuModule,
     TabMenuModule,
-    PaginatorModule
+    PaginatorModule,
+    CheckboxModule,
+    TableModule,
+    ProgressSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
