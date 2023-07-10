@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Message, PageEvent } from './BoardInterface';
+import { Message, MessageForShow, PageEvent } from './BoardInterface';
 import { MessageService } from 'primeng/api';
 
 @Component({
@@ -50,7 +50,7 @@ export class BoardComponent {
     page: 0,
     pageCount: 1
   };
-  messageListForShow: Message[] = [];
+  messageListForShow: MessageForShow[] = [];
 
   constructor(private messageService: MessageService) { }
 
@@ -158,7 +158,13 @@ export class BoardComponent {
     //處理分頁後呈現的資料
     for (let i = this.pageData.first; i <= this.pageData.first + this.pageData.rows - 1; i++) {
       if (this.messageList[i]) {
-        this.messageListForShow.push(this.messageList[i]);
+        const messageForShow: MessageForShow = {
+          title: this.messageList[i].title,
+          content: this.messageList[i].content,
+          date: this.messageList[i].date,
+          id: i
+        };
+        this.messageListForShow.push(messageForShow);
       }
     }
   }

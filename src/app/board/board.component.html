@@ -59,15 +59,15 @@
 
     <div style="height: 30px;">
     </div>
-    <ng-container *ngFor="let item of messageListForShow; let i = index">
-      <p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}}">
+    <ng-container *ngFor="let item of messageListForShow">
+      <p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}} {{item.id}}">
         <p>
           {{item.content}}
         </p>
         <div style="text-align:right">
-          <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px; cursor: pointer;" (click)="edit(i)"
+          <i class="pi pi-pencil" style="font-size: 1rem" style="margin: 10px; cursor: pointer;" (click)="edit(item.id)"
             pTooltip="編輯"></i>
-          <i class="pi pi-trash" style="font-size: 1rem" style="cursor: pointer;" (click)="deleteMessage(i)"
+          <i class="pi pi-trash" style="font-size: 1rem" style="cursor: pointer;" (click)="deleteMessage(item.id)"
             pTooltip="刪除"></i>
         </div>
       </p-panel>
