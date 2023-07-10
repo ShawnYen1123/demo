@@ -1,7 +1,17 @@
-.margin{
+.margin {
   margin-top: 10px;
   margin-bottom: 10px;
 }
-.myicon{
-cursor: pointer;
+
+.myicon {
+  cursor: pointer;
+}
+
+.content {
+  display: flex;
+  margin: auto;
+  padding: 0 16px;
+  max-width: 960px;
+  flex-direction: column;
+  align-items: center;
 }

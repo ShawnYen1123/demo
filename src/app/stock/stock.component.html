@@ -1,70 +1,73 @@
-<h1>股息查詢</h1>
-<div>
-  <input type="text" pInputText [(ngModel)]="newStock" placeholder="ex: 2303聯電" />&nbsp;&nbsp;&nbsp;
-  <p-button label="新增股票" (onClick)="createStock()"></p-button>
-</div>
-<div style="margin: 20px;">
-  <div class="card flex justify-content-center">
-    <div class="flex flex-column gap-10">
-      <div style="margin: 10px;">
-        <p-checkbox [(ngModel)]="isChooseAll" [binary]="true" inputId="binary"
-          (onChange)="chooseAll()"></p-checkbox>&nbsp;&nbsp;
-        <label>全選</label>
-      </div>
-      <div *ngFor="let stock of stockList;let i = index" style="margin: 10px;">
-        <p-checkbox name="group" [value]="stock" [(ngModel)]="selectedStock"
-          [inputId]="stock.stockId"></p-checkbox>&nbsp;&nbsp;
-        <label [for]="stock.stockId">{{ stock.stockName }}</label>
-        <span style="margin-left: 130px">
-          <i class="pi pi-trash" style="font-size: 1rem" style="cursor: pointer;" (click)="deleteStock(i)"
-            pTooltip="刪除"></i>
-        </span>
+<div style="text-align: center;">
 
+  <h1>股息查詢</h1>
+  <div>
+    <input type="text" pInputText [(ngModel)]="newStock" placeholder="ex: 2303聯電" />&nbsp;&nbsp;&nbsp;
+    <p-button label="新增股票" (onClick)="createStock()"></p-button>
+  </div>
+  <div style="margin: 20px;">
+    <div class="card flex justify-content-center">
+      <div class="flex flex-column gap-10">
+        <div style="margin: 10px; margin-right: 156px;">
+          <p-checkbox [(ngModel)]="isChooseAll" [binary]="true" inputId="binary"
+            (onChange)="chooseAll()"></p-checkbox>&nbsp;&nbsp;
+          <label>全選</label>
+        </div>
+        <div *ngFor="let stock of stockList;let i = index" style="margin: 10px;">
+          <p-checkbox name="group" [value]="stock" [(ngModel)]="selectedStock"
+            [inputId]="stock.stockId"></p-checkbox>&nbsp;&nbsp;
+          <label [for]="stock.stockId">{{ stock.stockName }}</label>
+          <span style="margin-left: 130px">
+            <i class="pi pi-trash" style="font-size: 1rem" style="cursor: pointer;" (click)="deleteStock(i)"
+              pTooltip="刪除"></i>
+          </span>
+
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div style="margin-top: 40px;margin-bottom: 40px;">
-  <p-button label="查詢配息" (onClick)="getStockInfo()"></p-button>
-</div>
-
-
-<div *ngIf="!isLoading">
-  <div *ngFor="let stockInfoData of stockInfoDatas">
-    <h2>{{stockInfoData.stockName}} {{stockInfoData.stockId}}</h2>
-    <p-table [value]="stockInfoData.stockInfoList">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>發放年度</th>
-          <th>除權日</th>
-          <th>除息日</th>
-          <th>除權息前股價</th>
-          <th>股票股利</th>
-          <th>現金股利</th>
-          <th>現金殖利率</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-stockInfo>
-        <tr>
-          <td>{{ stockInfo.year }}</td>
-          <td>{{ stockInfo.rightDate }}</td>
-          <td>{{ stockInfo.dividendDate }}</td>
-          <td>{{ stockInfo.exprice }}</td>
-          <td>{{ stockInfo.stockDividend }}</td>
-          <td>{{ stockInfo.cashDividend }}</td>
-          <td>{{ stockInfo.cashDividendYield }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
+  <div style="margin-top: 40px;margin-bottom: 40px;">
+    <p-button label="查詢配息" (onClick)="getStockInfo()"></p-button>
   </div>
+
+
+  <div *ngIf="!isLoading" style="max-width: 960px; margin: auto;">
+    <div *ngFor="let stockInfoData of stockInfoDatas">
+      <h2>{{stockInfoData.stockName}} {{stockInfoData.stockId}}</h2>
+      <p-table [value]="stockInfoData.stockInfoList" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>發放年度</th>
+            <th>除權日</th>
+            <th>除息日</th>
+            <th>除權息前股價</th>
+            <th>股票股利</th>
+            <th>現金股利</th>
+            <th>現金殖利率</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-stockInfo>
+          <tr>
+            <td>{{ stockInfo.year }}</td>
+            <td>{{ stockInfo.rightDate }}</td>
+            <td>{{ stockInfo.dividendDate }}</td>
+            <td>{{ stockInfo.exprice }}</td>
+            <td>{{ stockInfo.stockDividend }}</td>
+            <td>{{ stockInfo.cashDividend }}</td>
+            <td>{{ stockInfo.cashDividendYield }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+
+  <div *ngIf="isLoading" style="text-align: center;">
+    <h2>讀取中</h2>
+    <p-progressSpinner></p-progressSpinner>
+  </div>
+
+  <p-toast></p-toast>
+
 </div>
-
-
-<div *ngIf="isLoading" style="text-align: center;">
-  <h2>讀取中</h2>
-  <p-progressSpinner></p-progressSpinner>
-</div>
-
-
-<p-toast></p-toast>
