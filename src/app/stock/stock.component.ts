@@ -80,7 +80,7 @@ export class StockComponent {
       (error) => {
         console.error('發生錯誤:', error);
         this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'success', detail: error });
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
       }
     );
 

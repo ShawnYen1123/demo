@@ -33,7 +33,7 @@
 <div *ngIf="!isLoading">
   <div *ngFor="let stockInfoData of stockInfoDatas">
     <h2>{{stockInfoData.stockName}} {{stockInfoData.stockId}}</h2>
-    <p-table [value]="stockInfoData.stockInfoList" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="stockInfoData.stockInfoList">
       <ng-template pTemplate="header">
         <tr>
           <th>發放年度</th>
