@@ -8,7 +8,7 @@
   <div style="margin: 20px;">
     <div class="card flex justify-content-center">
       <div class="flex flex-column gap-10">
-        <div style="margin: 10px; margin-right: 156px;">
+        <div style="margin: 10px; margin-right: 156px;" *ngIf="stockList.length !== 0">
           <p-checkbox [(ngModel)]="isChooseAll" [binary]="true" inputId="binary"
             (onChange)="chooseAll()"></p-checkbox>&nbsp;&nbsp;
           <label>全選</label>
@@ -68,6 +68,6 @@
     <p-progressSpinner></p-progressSpinner>
   </div>
 
-  <p-toast></p-toast>
-
 </div>
+
+<p-toast position="bottom-right"></p-toast>

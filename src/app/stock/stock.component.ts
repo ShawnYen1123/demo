@@ -16,7 +16,7 @@ export class StockComponent {
   isChooseAll = false;
   stockInfoDatas: StockInfoData[] = [];
 
-  stockList: Stock[] = [
+  mokeStockList: Stock[] = [
     { stockName: '台泥', stockId: '1101' },
     { stockName: '聯電', stockId: '2303' },
     { stockName: '鴻海', stockId: '2317' },
@@ -26,13 +26,14 @@ export class StockComponent {
     { stockName: '陽明', stockId: '2609' },
     { stockName: '英濟', stockId: '3294' },
     { stockName: '鈺創', stockId: '5351' }
-  ];
+  ]
+  stockList: Stock[] = [];
 
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-
+    this.getDataFromBrowser();
   }
 
   createStock() {
@@ -48,6 +49,7 @@ export class StockComponent {
       this.messageService.add({ severity: 'info', summary: 'info', detail: '輸入請遵循格式(ex:2303聯電)' });
     } else {
       this.stockList.push({ stockName: name, stockId: id });
+      this.setDataToBrowser();
       this.messageService.add({ severity: 'info', summary: 'success', detail: '股票新增成功' });
       this.newStock = '';
     }
@@ -55,6 +57,7 @@ export class StockComponent {
 
   deleteStock(index: number) {
     this.stockList.splice(index, 1);
+    this.setDataToBrowser();
     this.messageService.add({ severity: 'info', summary: 'success', detail: '股票刪除成功' });
   }
 
@@ -84,5 +87,24 @@ export class StockComponent {
       }
     );
 
+  }
+
+  setDataToBrowser() {
+    let data = JSON.stringify(this.stockList);
+    localStorage.setItem('stock', data);
+  }
+
+  getDataFromBrowser() {
+    const data = localStorage.getItem('stock');
+    if (data === null) {
+      this.stockList = this.mokeStockList;
+    } else {
+      const messageList = JSON.parse(data);
+      if (messageList.length === 0) {
+        this.stockList = this.mokeStockList;
+      } else {
+        this.stockList = messageList;
+      }
+    }
   }
 }

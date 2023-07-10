@@ -1,7 +1,7 @@
 <div class="content">
   <div class="card flex justify-content-center">
     <h1>留言板</h1>
-    <div class="margin">
+    <div class="margin" *ngIf="!isEdit">
       <p-button label="新增留言" (onClick)="createMessage()" *ngIf="!isCreate"></p-button>
     </div>
     <div *ngIf="isCreate" class="margin">
@@ -74,12 +74,12 @@
       <div style="height: 20px;">
       </div>
     </ng-container>
-    <div class="card flex justify-content-center">
+    <div class="card flex justify-content-center" *ngIf="messageList.length !== 0">
       <p-paginator (onPageChange)="onPageChange($event)" [first]="pageData.first" [rows]="pageData.rows"
         [totalRecords]="messageList.length"></p-paginator>
     </div>
 
-    <p-toast></p-toast>
+    <p-toast position="bottom-right"></p-toast>
 
   </div>
 </div>

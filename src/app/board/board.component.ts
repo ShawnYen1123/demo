@@ -10,6 +10,33 @@ import { MessageService } from 'primeng/api';
 })
 export class BoardComponent {
   date: Date = new Date;
+  mokeMessageList: Message[] = [
+    {
+      title: '範例標題一',
+      content: '範例內容一',
+      date: new Date
+    },
+    {
+      title: '範例標題二',
+      content: '範例內容二',
+      date: new Date
+    },
+    {
+      title: '範例標題三',
+      content: '範例內容三',
+      date: new Date
+    },
+    {
+      title: '範例標題四',
+      content: '範例內容四',
+      date: new Date
+    },
+    {
+      title: '範例標題五',
+      content: '範例內容五',
+      date: new Date
+    }];
+
   messageList: Message[] = [];
   contentInput: string = '';
   titleInput: string = '';
@@ -107,9 +134,15 @@ export class BoardComponent {
 
   getDataFromBrowser() {
     const data = localStorage.getItem('message');
-    if (data !== null) {
+    if (data === null) {
+      this.messageList = this.mokeMessageList;
+    } else {
       const messageList = JSON.parse(data);
-      this.messageList = messageList;
+      if (messageList.length === 0) {
+        this.messageList = this.mokeMessageList;
+      } else {
+        this.messageList = messageList;
+      }
     }
   }
 
