@@ -35,30 +35,37 @@
   <div *ngIf="!isLoading" style="max-width: 960px; margin: auto;">
     <div *ngFor="let stockInfoData of stockInfoDatas">
       <h2>{{stockInfoData.stockName}} {{stockInfoData.stockId}}</h2>
-      <p-table [value]="stockInfoData.stockInfoList" [tableStyle]="{ 'min-width': '50rem' }">
-        <ng-template pTemplate="header">
-          <tr>
-            <th>發放年度</th>
-            <th>除權日</th>
-            <th>除息日</th>
-            <th>除權息前股價</th>
-            <th>股票股利</th>
-            <th>現金股利</th>
-            <th>現金殖利率</th>
-          </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-stockInfo>
-          <tr>
-            <td>{{ stockInfo.year }}</td>
-            <td>{{ stockInfo.rightDate }}</td>
-            <td>{{ stockInfo.dividendDate }}</td>
-            <td>{{ stockInfo.exprice }}</td>
-            <td>{{ stockInfo.stockDividend }}</td>
-            <td>{{ stockInfo.cashDividend }}</td>
-            <td>{{ stockInfo.cashDividendYield }}</td>
-          </tr>
-        </ng-template>
-      </p-table>
+      <ng-container *ngIf="stockInfoData.stockInfoList[0].year === null">
+        <h3>股票號碼查詢失敗，請確認股票號碼是否正確</h3>
+      </ng-container>
+
+      <ng-container *ngIf="stockInfoData.stockInfoList[0].year !== null">
+        <p-table [value]="stockInfoData.stockInfoList" [tableStyle]="{ 'min-width': '50rem' }">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>發放年度</th>
+              <th>除權日</th>
+              <th>除息日</th>
+              <th>除權息前股價</th>
+              <th>股票股利</th>
+              <th>現金股利</th>
+              <th>現金殖利率</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-stockInfo>
+            <tr>
+              <td>{{ stockInfo.year }}</td>
+              <td>{{ stockInfo.rightDate }}</td>
+              <td>{{ stockInfo.dividendDate }}</td>
+              <td>{{ stockInfo.exprice }}</td>
+              <td>{{ stockInfo.stockDividend }}</td>
+              <td>{{ stockInfo.cashDividend }}</td>
+              <td>{{ stockInfo.cashDividendYield }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </ng-container>
+
     </div>
   </div>
 
