@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Message, MessageForShow, PageEvent } from './BoardInterface';
 import { MessageService } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
+import { FileServiceService } from '../service/file-service.service';
 
 @Component({
   selector: 'app-board',
@@ -54,7 +55,7 @@ export class BoardComponent {
   };
   messageListForShow: MessageForShow[] = [];
 
-  constructor(private messageService: MessageService, private http: HttpClient) { }
+  constructor(private messageService: MessageService, private http: HttpClient, private fileService: FileServiceService) { }
 
   ngOnInit(): void {
     this.getInitDataFromServer();
@@ -207,6 +208,9 @@ export class BoardComponent {
         this.messageListForShow.push(messageForShow);
       }
     }
+  }
+  download(){
+    this.fileService.downloadFile('messageList.json');
   }
 
 }

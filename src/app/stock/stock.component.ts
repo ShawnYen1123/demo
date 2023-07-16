@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Stock, StockInfoData } from './StockInterface';
 import { MessageService } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
+import { FileServiceService } from '../service/file-service.service';
 
 @Component({
   selector: 'app-stock',
@@ -30,7 +31,7 @@ export class StockComponent {
   stockList: Stock[] = [];
 
 
-  constructor(private messageService: MessageService, private http: HttpClient) { }
+  constructor(private messageService: MessageService, private http: HttpClient, private fileService: FileServiceService) { }
 
   ngOnInit(): void {
     this.getDataFromBrowser();
@@ -133,5 +134,9 @@ export class StockComponent {
     //     this.stockList = messageList;
     //   }
     // }
+  }
+
+  download(){
+    this.fileService.downloadFile('stockList.json');
   }
 }

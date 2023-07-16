@@ -3,7 +3,9 @@
   <h1>股息查詢</h1>
   <div>
     <input type="text" pInputText [(ngModel)]="newStock" placeholder="ex: 2303聯電" />&nbsp;&nbsp;&nbsp;
-    <p-button label="新增股票" (onClick)="createStock()"></p-button>
+    <p-button label="新增股票" (onClick)="createStock()"></p-button>&nbsp;&nbsp;
+      <i class="pi pi-download" style="font-size: 1rem" style="cursor: pointer;" (click)="download()"
+                pTooltip="股票清單原始檔"></i>
   </div>
   <div style="margin: 20px;">
     <div class="card flex justify-content-center">

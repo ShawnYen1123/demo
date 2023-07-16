@@ -1,6 +1,12 @@
 <div class="content">
   <div class="card flex justify-content-center">
-    <h1>留言板</h1>
+    <div style="display: flex;">
+      <h1>留言板</h1>
+      <span style="margin-top: 32px;margin-left: 10px;">
+        <i class="pi pi-download" style="font-size: 1rem" style="cursor: pointer;" (click)="download()"
+          pTooltip="留言清單原始檔"></i>
+      </span>
+    </div>
     <div class="margin" *ngIf="!isEdit">
       <p-button label="新增留言" (onClick)="createMessage()" *ngIf="!isCreate"></p-button>
     </div>
