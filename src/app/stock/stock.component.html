@@ -36,7 +36,7 @@
     <div *ngFor="let stockInfoData of stockInfoDatas">
       <h2>{{stockInfoData.stockName}} {{stockInfoData.stockId}}</h2>
       <ng-container *ngIf="stockInfoData.stockInfoList[0].year === null">
-        <h3>股票號碼查詢失敗，請確認股票號碼是否正確</h3>
+        <h3>查無配息資訊</h3>
       </ng-container>
 
       <ng-container *ngIf="stockInfoData.stockInfoList[0].year !== null">

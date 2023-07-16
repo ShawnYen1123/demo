@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Message, MessageForShow, PageEvent } from './BoardInterface';
 import { MessageService } from 'primeng/api';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-board',
@@ -9,6 +10,7 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class BoardComponent {
+  isLoading = false;
   date: Date = new Date;
   mokeMessageList: Message[] = [
     {
@@ -52,18 +54,10 @@ export class BoardComponent {
   };
   messageListForShow: MessageForShow[] = [];
 
-  constructor(private messageService: MessageService) { }
+  constructor(private messageService: MessageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.getDataFromBrowser();
-    // 初始設定分頁資訊
-    const itemNumbers = this.messageList.length;
-    if (itemNumbers % this.pageData.rows === 0) {
-      this.pageData.pageCount = itemNumbers % this.pageData.rows;
-    } else {
-      this.pageData.pageCount = itemNumbers % this.pageData.rows + 1;
-    }
-    this.getMessageListForShow();
+    this.getInitDataFromServer();
   }
 
   createMessage() {
@@ -84,9 +78,7 @@ export class BoardComponent {
       date: new Date
     });
     this.isCreate = false;
-    this.showToast('success', '留言新增成功');
-    this.setDataToBrowser();
-    this.getMessageListForShow();
+    this.setDataToBrowser('create');
   }
 
   cancel() {
@@ -101,6 +93,7 @@ export class BoardComponent {
   }
 
   edit(index: number) {
+    this.isCreate = false;
     this.isEdit = true;
     this.titleInput = this.messageList[index].title;
     this.contentInput = this.messageList[index].content;
@@ -116,34 +109,81 @@ export class BoardComponent {
     this.messageList[this.editIndex].date = new Date;
     this.messageList[this.editIndex].title = this.titleInput;
     this.isEdit = false;
-    this.showToast('success', '留言編輯成功');
-    this.setDataToBrowser();
+    this.setDataToBrowser('edit');
   }
 
   deleteMessage(index: number) {
     this.messageList.splice(index, 1);
-    this.showToast('success', '留言刪除成功');
-    this.setDataToBrowser();
-    this.getMessageListForShow();
+    this.setDataToBrowser('delete');
   }
 
-  setDataToBrowser() {
-    let data = JSON.stringify(this.messageList);
-    localStorage.setItem('message', data);
-  }
-
-  getDataFromBrowser() {
-    const data = localStorage.getItem('message');
-    if (data === null) {
-      this.messageList = this.mokeMessageList;
-    } else {
-      const messageList = JSON.parse(data);
-      if (messageList.length === 0) {
-        this.messageList = this.mokeMessageList;
-      } else {
-        this.messageList = messageList;
+  setDataToBrowser(type: string) {
+    const request: Message[] = this.messageList;
+    this.isLoading = true;
+    console.log(request);
+    this.http.post<string>('https://shawnyendemo.onrender.com/api/MessageList', request).subscribe(
+      () => {
+        this.isLoading = false;
+        if (type === 'create') {
+          this.showToast('success', '留言新增成功');
+        } else if (type === 'delete') {
+          this.showToast('success', '留言刪除成功');
+        } else {
+          this.showToast('success', '留言編輯成功');
+        }
+        this.getMessageListForShow();
+      },
+      (error) => {
+        console.error('發生錯誤:', error);
+        this.isLoading = false;
+        if (type === 'create') {
+          this.showToast('info', '新增失敗');
+        } else if (type === 'delete') {
+          this.showToast('info', '刪除失敗');
+        } else {
+          this.showToast('info', '編輯失敗');
+        }
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+        this.getInitDataFromServer(); // 新刪修失敗就重新撈初始資料
       }
-    }
+    );
+    // let data = JSON.stringify(this.messageList);
+    // localStorage.setItem('message', data);
+  }
+
+  getInitDataFromServer() {
+
+    this.isLoading = true;
+    this.http.get<Message[]>('https://shawnyendemo.onrender.com/api/MessageList').subscribe(
+      (response) => {
+        this.isLoading = false;
+        this.messageList = response;
+        // 初始設定分頁資訊
+        const itemNumbers = this.messageList.length;
+        if (itemNumbers % this.pageData.rows === 0) {
+          this.pageData.pageCount = itemNumbers % this.pageData.rows;
+        } else {
+          this.pageData.pageCount = itemNumbers % this.pageData.rows + 1;
+        }
+        this.getMessageListForShow();
+      },
+      (error) => {
+        console.error('發生錯誤:', error);
+        this.isLoading = false;
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+      }
+    );
+    // const data = localStorage.getItem('message');
+    // if (data === null) {
+    //   this.messageList = this.mokeMessageList;
+    // } else {
+    //   const messageList = JSON.parse(data);
+    //   if (messageList.length === 0) {
+    //     this.messageList = this.mokeMessageList;
+    //   } else {
+    //     this.messageList = messageList;
+    //   }
+    // }
   }
 
   onPageChange(event: any) {

@@ -59,6 +59,10 @@
 
     <div style="height: 30px;">
     </div>
+    <div *ngIf="isLoading" style="text-align: center;">
+      <h2>讀取中</h2>
+      <p-progressSpinner></p-progressSpinner>
+    </div>
     <ng-container *ngFor="let item of messageListForShow">
       <p-panel header="{{item.title}}    {{item.date|date:'yyyy/MM/dd hh:mm:ss'}} ">
         <p>
