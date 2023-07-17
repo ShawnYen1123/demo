@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { saveAs } from 'file-saver';
+import * as FileSaver from 'file-saver';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class FileServiceService {
 
     this.http.get(url, options).subscribe(
       (response:any) => {
-        saveAs(response, fileName); // 使用 file-saver 套件下載檔案
+        FileSaver(response, fileName); // 使用 file-saver 套件下載檔案
       },
       (error: any) => {
         console.error(error);
