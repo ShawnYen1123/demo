@@ -7,10 +7,12 @@ import { StockComponent } from './stock/stock.component';
 const routes: Routes = [{ path: 'board', component: BoardComponent },
                         { path: 'index', component: IndexComponent },
                         { path: 'stock', component: StockComponent},
-                        { path: '', component: IndexComponent}];
+                        { path: '', component: IndexComponent},
+                        { path: '**', component: IndexComponent}];
+
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes,{useHash:true})],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
