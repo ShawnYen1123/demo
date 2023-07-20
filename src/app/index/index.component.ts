@@ -9,11 +9,22 @@ import { MessageService } from 'primeng/api';
   providers: [MessageService]
 })
 export class IndexComponent {
+  private intervalId: any; // 儲存 setInterval() 回傳的 ID
 
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.getServerCheck();
+    // 設置定時器，每隔 10 分鐘觸發一次
+    setInterval(() => {
+      this.getServerCheck();
+    }, 600000); // 600,000 毫秒，即每 10 分鐘觸發一次
+  }
+
+  ngOnDestroy() {
+    // 在組件被銷毀時，停止定時器
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
   }
 
   getServerCheck() {
