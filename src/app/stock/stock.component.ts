@@ -139,4 +139,23 @@ export class StockComponent {
   download(){
     this.fileService.downloadFile('stockList.json');
   }
+
+  notifyStockInfo(){
+    if (this.selectedStock.length === 0) {
+      return;
+    }
+    const request: Stock[] = this.selectedStock;
+    this.isLoading = true;
+    this.http.post('https://shawnyendemo.onrender.com/api/StockInfoNotify', request, { responseType: 'text' }).subscribe(
+      (response) => {
+        this.isLoading = false;
+        this.messageService.add({ severity: 'success', summary: 'success', detail: response });
+      },
+      (error) => {
+        console.error('發生錯誤:', error);
+        this.isLoading = false;
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+      }
+    );
+  }
 }
