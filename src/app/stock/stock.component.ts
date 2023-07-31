@@ -94,46 +94,48 @@ export class StockComponent {
     const request: Stock[] = this.stockList;
     this.isLoading = true;
     console.log(request);
-    this.http.post<string>('https://shawnyendemo.onrender.com/api/StockList', request).subscribe(
-      () => {
-        this.isLoading = false;
-        this.getDataFromBrowser();
-      },
-      (error) => {
-        console.error('發生錯誤:', error);
-        this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-      }
-    );
-    // let data = JSON.stringify(this.stockList);
-    // localStorage.setItem('stock', data);
+    // this.http.post<string>('https://shawnyendemo.onrender.com/api/StockList', request).subscribe(
+    //   () => {
+    //     this.isLoading = false;
+    //     this.getDataFromBrowser();
+    //   },
+    //   (error) => {
+    //     console.error('發生錯誤:', error);
+    //     this.isLoading = false;
+    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+    //   }
+    // );
+    let data = JSON.stringify(this.stockList);
+    localStorage.setItem('stock', data);
+    this.isLoading = false;
   }
 
   getDataFromBrowser() {
     this.isLoading = true;
-    this.http.get<Stock[]>('https://shawnyendemo.onrender.com/api/StockList').subscribe(
-      (response) => {
-        this.isLoading = false;
-        this.stockList = response;
-      },
-      (error) => {
-        console.error('發生錯誤:', error);
-        this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-      }
-    );
-
-    // const data = localStorage.getItem('stock');
-    // if (data === null) {
-    //   this.stockList = this.mokeStockList;
-    // } else {
-    //   const messageList = JSON.parse(data);
-    //   if (messageList.length === 0) {
-    //     this.stockList = this.mokeStockList;
-    //   } else {
-    //     this.stockList = messageList;
+    // this.http.get<Stock[]>('https://shawnyendemo.onrender.com/api/StockList').subscribe(
+    //   (response) => {
+    //     this.isLoading = false;
+    //     this.stockList = response;
+    //   },
+    //   (error) => {
+    //     console.error('發生錯誤:', error);
+    //     this.isLoading = false;
+    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
     //   }
-    // }
+    // );
+
+    const data = localStorage.getItem('stock');
+    if (data === null) {
+      this.stockList = this.mokeStockList;
+    } else {
+      const messageList = JSON.parse(data);
+      if (messageList.length === 0) {
+        this.stockList = this.mokeStockList;
+      } else {
+        this.stockList = messageList;
+      }
+    }
+    this.isLoading = false;
   }
 
   download(){
