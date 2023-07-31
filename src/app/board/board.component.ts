@@ -151,6 +151,14 @@ export class BoardComponent {
     let data = JSON.stringify(this.messageList);
     localStorage.setItem('message', data);
     this.isLoading = false;
+    if (type === 'create') {
+      this.showToast('success', '留言新增成功');
+    } else if (type === 'delete') {
+      this.showToast('success', '留言刪除成功');
+    } else {
+      this.showToast('success', '留言編輯成功');
+    }
+    this.getMessageListForShow();
   }
 
   getInitDataFromServer() {
@@ -181,7 +189,7 @@ export class BoardComponent {
       this.messageList = this.mokeMessageList;
     } else {
       const messageList = JSON.parse(data);
-      console.log(messageList,'14564646');
+      console.log(messageList, '14564646');
       if (messageList.length === 0) {
         this.messageList = this.mokeMessageList;
       } else {
@@ -216,7 +224,7 @@ export class BoardComponent {
       }
     }
   }
-  download(){
+  download() {
     this.fileService.downloadFile('messageList.json');
   }
 
