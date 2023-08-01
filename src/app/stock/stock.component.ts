@@ -149,9 +149,9 @@ export class StockComponent {
     const request: Stock[] = this.selectedStock;
     this.isLoading = true;
     this.http.post('https://shawnyendemo.onrender.com/api/StockInfoNotify', request, { responseType: 'text' }).subscribe(
-      (response) => {
+      () => {
         this.isLoading = false;
-        this.messageService.add({ severity: 'success', summary: 'success', detail: response });
+        this.messageService.add({ severity: 'success', summary: 'success', detail: "傳送成功" });
       },
       (error) => {
         console.error('發生錯誤:', error);
