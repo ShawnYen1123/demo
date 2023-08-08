@@ -10,7 +10,7 @@ import { MessageService } from 'primeng/api';
 })
 export class IndexComponent {
   // private intervalId: any; // 儲存 setInterval() 回傳的 ID
-
+  isLoading = false;
   constructor(private messageService: MessageService, private http: HttpClient) { }
 
   ngOnInit(): void {
@@ -29,9 +29,11 @@ export class IndexComponent {
   }
 
   getServerCheck() {
+    this.isLoading = true;
     this.http.get('https://shawnyendemo.onrender.com/CheckServer', { responseType: 'text' }).subscribe(
       (response) => {
         console.log(response);
+        this.isLoading = false;
       },
       (error) => {
         console.error('發生錯誤:', error);
