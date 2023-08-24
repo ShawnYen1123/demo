@@ -1,6 +1,6 @@
 <div class="content">
   <div class="card flex justify-content-center">
-    <p-card header="ShawnYen" subheader="Skills" [style]="{ width: '360px' }">
+    <p-card header="ShawnYen" [style]="{ width: '360px' }">
       <ng-template pTemplate="header">
         <img src="assets/images/myPicture.jpg">
       </ng-template>
@@ -10,6 +10,7 @@
       </div>
       <div *ngIf="!isLoading">
         <p>
+          Skills: <br>
           html <br>
           CSS <br>
           JavaScript <br>
@@ -19,6 +20,7 @@
           C# <br>
           MSSQL <br>
         </p>
+        <i class="pi pi-briefcase"></i>&nbsp;&nbsp;<a href="https://www.cakeresume.com/yrs791123">我的履歷</a>
       </div>
     </p-card>
   </div>
