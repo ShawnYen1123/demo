@@ -122,32 +122,34 @@ export class BoardComponent {
     const request: Message[] = this.messageList;
     this.isLoading = true;
     console.log(request);
-    // this.http.post<string>('https://shawnyendemo.onrender.com/api/MessageList', request).subscribe(
-    //   () => {
-    //     this.isLoading = false;
-    //     if (type === 'create') {
-    //       this.showToast('success', '留言新增成功');
-    //     } else if (type === 'delete') {
-    //       this.showToast('success', '留言刪除成功');
-    //     } else {
-    //       this.showToast('success', '留言編輯成功');
-    //     }
-    //     this.getMessageListForShow();
-    //   },
-    //   (error) => {
-    //     console.error('發生錯誤:', error);
-    //     this.isLoading = false;
-    //     if (type === 'create') {
-    //       this.showToast('info', '新增失敗');
-    //     } else if (type === 'delete') {
-    //       this.showToast('info', '刪除失敗');
-    //     } else {
-    //       this.showToast('info', '編輯失敗');
-    //     }
-    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-    //     this.getInitDataFromServer(); // 新刪修失敗就重新撈初始資料
-    //   }
-    // );
+    this.http.post<string>('https://shawnyendemo.onrender.com/api/MessageList', request).subscribe(
+      () => {
+        this.isLoading = false;
+        if (type === 'create') {
+          this.showToast('success', '留言新增成功');
+        } else if (type === 'delete') {
+          this.showToast('success', '留言刪除成功');
+        } else {
+          this.showToast('success', '留言編輯成功');
+        }
+        this.getMessageListForShow();
+      },
+      (error) => {
+        console.error('發生錯誤:', error);
+        this.isLoading = false;
+        if (type === 'create') {
+          this.showToast('info', '新增失敗');
+        } else if (type === 'delete') {
+          this.showToast('info', '刪除失敗');
+        } else {
+          this.showToast('info', '編輯失敗');
+        }
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+        this.getInitDataFromServer(); // 新刪修失敗就重新撈初始資料
+      }
+    );
+
+    /*
     let data = JSON.stringify(this.messageList);
     localStorage.setItem('message', data);
     this.isLoading = false;
@@ -159,30 +161,34 @@ export class BoardComponent {
       this.showToast('success', '留言編輯成功');
     }
     this.getMessageListForShow();
+
+    */
   }
 
   getInitDataFromServer() {
 
     this.isLoading = true;
-    // this.http.get<Message[]>('https://shawnyendemo.onrender.com/api/MessageList').subscribe(
-    //   (response) => {
-    //     this.isLoading = false;
-    //     this.messageList = response;
-    //     // 初始設定分頁資訊
-    //     const itemNumbers = this.messageList.length;
-    //     if (itemNumbers % this.pageData.rows === 0) {
-    //       this.pageData.pageCount = itemNumbers % this.pageData.rows;
-    //     } else {
-    //       this.pageData.pageCount = itemNumbers % this.pageData.rows + 1;
-    //     }
-    //     this.getMessageListForShow();
-    //   },
-    //   (error) => {
-    //     console.error('發生錯誤:', error);
-    //     this.isLoading = false;
-    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-    //   }
-    // );
+    this.http.get<Message[]>('https://shawnyendemo.onrender.com/api/MessageList').subscribe(
+      (response) => {
+        this.isLoading = false;
+        this.messageList = response;
+        // 初始設定分頁資訊
+        const itemNumbers = this.messageList.length;
+        if (itemNumbers % this.pageData.rows === 0) {
+          this.pageData.pageCount = itemNumbers % this.pageData.rows;
+        } else {
+          this.pageData.pageCount = itemNumbers % this.pageData.rows + 1;
+        }
+        this.getMessageListForShow();
+      },
+      (error) => {
+        console.error('發生錯誤:', error);
+        this.isLoading = false;
+        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+      }
+    );
+
+    /*
     const data = localStorage.getItem('message');
     console.log(data);
     if (data === null) {
@@ -200,6 +206,7 @@ export class BoardComponent {
     this.isLoading = false;
 
     this.getMessageListForShow();
+    */
   }
 
   onPageChange(event: any) {
