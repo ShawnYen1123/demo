@@ -1,0 +1,41 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '16.14.0'
+  displayName: 'Install Node.js'
+
+
+
+# ======================================================
+# CI 步驟: 建構 Angular 應用程式
+# ======================================================
+- script: |
+    npm install -g @angular/cli
+    npm install
+    ng build --configuration=production --base-href /demo/
+  displayName: 'Build Angular App (CI)'
+
+
+
+  # ======================================================
+# CD 步驟: 部署到 GitHub Pages
+# ======================================================
+- script: |
+    # 設定 git 的使用者資訊，這樣 ngh 才能代表它來 commit
+    git config --global user.name "Azure Pipelines"
+    git config --global user.email "azure-pipelines@microsoft.com"
+    
+    # 執行部署指令，注意我們如何使用秘密變數 $(GITHUB_PAT)
+    npx ngh --dir=dist/demo --repo=https://github.com/ShawnYen1123/demo.git --no-silent
+  displayName: 'Deploy to GitHub Pages (CD)'
