@@ -1,7 +1,7 @@
 export interface Message {
   title: string;
   content: string;
-  date: Date;
+  date: string;
 }
 
 export interface MessageForShow extends Message {

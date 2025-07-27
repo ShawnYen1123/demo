@@ -13,6 +13,7 @@ import { FileServiceService } from '../service/file-service.service';
 export class BoardComponent {
   isLoading = false;
   date: Date = new Date;
+  /*
   mokeMessageList: Message[] = [
     {
       title: '範例標題一',
@@ -39,6 +40,7 @@ export class BoardComponent {
       content: '範例內容五',
       date: new Date
     }];
+   */
 
   messageList: Message[] = [];
   contentInput: string = '';
@@ -76,7 +78,7 @@ export class BoardComponent {
     this.messageList.unshift({
       title: this.titleInput,
       content: this.contentInput,
-      date: new Date
+      date: (new Date).toISOString()
     });
     this.isCreate = false;
     this.setDataToBrowser('create');
@@ -107,7 +109,7 @@ export class BoardComponent {
       return;
     }
     this.messageList[this.editIndex].content = this.contentInput;
-    this.messageList[this.editIndex].date = new Date;
+    this.messageList[this.editIndex].date = (new Date).toISOString();
     this.messageList[this.editIndex].title = this.titleInput;
     this.isEdit = false;
     this.setDataToBrowser('edit');
