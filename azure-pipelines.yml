@@ -31,11 +31,13 @@ steps:
   # ======================================================
 # CD 步驟: 部署到 GitHub Pages
 # ======================================================
-- script: |
-    # 設定 git 的使用者資訊，這樣 ngh 才能代表它來 commit
-    git config --global user.name "Azure Pipelines"
-    git config --global user.email "azure-pipelines@microsoft.com"
-    
-    # 執行部署指令，注意我們如何使用秘密變數 $(GITHUB_PAT)
-    npx ngh --dir=dist/demo --repo=https://github.com/ShawnYen1123/demo.git --no-silent
-  displayName: 'Deploy to GitHub Pages (CD)'
+
+- task: GitHubPagesPublish@1
+  inputs:
+    docPath: '$(System.DefaultWorkingDirectory)\Documentation\site\*'
+    githubusername: 'ShawnYen1123'
+    githubemail: 'yrs791123@hotmail.com'
+    githubaccesstoken: '$(token)'
+    repositoryname: 'demo'
+    branchname: 'gh-pages'
+    commitmessage: 'Automated Release $(Release.ReleaseId)'
