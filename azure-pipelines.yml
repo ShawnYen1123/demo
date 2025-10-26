@@ -44,7 +44,7 @@ steps:
     docPath: '$(System.DefaultWorkingDirectory)/dist/demo/*' # 假設專案名稱為 'demo'
     
     githubusername: 'ShawnYen1123'
-    githubemail: 'yrs791123@hotmail.com'
+    githubemail: 'shawnyen@hotmail.com'
     githubaccesstoken: '$(token)' 
     repositoryname: 'demo'
     branchname: 'gh-pages'
