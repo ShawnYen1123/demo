@@ -6,7 +6,7 @@ pool:
 
 steps:
 # ======================================================
-# (修正 1) Node.js 版本必須符合 Angular v16 的要求
+# Node.js 版本必須符合 Angular v16 的要求
 # ======================================================
 - task: NodeTool@0
   inputs:
@@ -14,21 +14,17 @@ steps:
   displayName: 'Install Node.js 18.x' 
 
 # ======================================================
-# (修正 2) CI 步驟：使用 'npm ci' 和 'npx'
+# CI 步驟
 # ======================================================
 - script: |
-    npm ci
-    npx ng build --configuration=production --base-href /demo/
-  displayName: 'Install Dependencies & Build Angular App'
+    ng build --configuration=production --base-href /demo/
+  displayName: 'Build Angular App'
 
 # ======================================================
 # CD 步驟: 部署到 GitHub Pages
 # ======================================================
 - task: GitHubPagesPublish@1
   inputs:
-    # 
-    # (修正 3 - 致命錯誤) 'docPath' 必須指向建置的輸出目錄
-    # 
     docPath: '$(System.DefaultWorkingDirectory)/dist/demo' # 假設專案名稱為 'demo'
     
     githubusername: 'ShawnYen1123'
