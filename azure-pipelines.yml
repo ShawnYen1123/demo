@@ -1,43 +1,43 @@
-# Node.js with Angular
-# Build a Node.js project that uses Angular.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
-
 trigger:
 - master
 
 pool:
-  vmImage: windows-latest
+  vmImage: 'windows-latest' # 推薦使用 'ubuntu-latest'，它更快
 
 steps:
+# ======================================================
+# (修正 1) Node.js 版本必須符合 Angular v16 的要求
+# ======================================================
 - task: NodeTool@0
   inputs:
-    versionSpec: 'v20.19'
-  displayName: 'Install Node.js'
-
-
+    versionSpec: '18.x' # Angular v16 必須使用 16.x 或 18.x。
+  displayName: 'Install Node.js 18.x' 
 
 # ======================================================
-# CI 步驟: 建構 Angular 應用程式
+# (修正 2) CI 步驟：使用 'npm ci' 和 'npx'
 # ======================================================
 - script: |
-    npm install -g @angular/cli
-    npm install
-    ng build --configuration=production --base-href /demo/
-  displayName: 'Build Angular App (CI)'
+    npm ci
+    npx ng build --configuration=production --base-href /demo/
+  displayName: 'Install Dependencies & Build Angular App'
 
-
-
-  # ======================================================
+# ======================================================
 # CD 步驟: 部署到 GitHub Pages
 # ======================================================
-
 - task: GitHubPagesPublish@1
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)\Documentation\site\*'
+    # 
+    # (修正 3 - 致命錯誤) 'docPath' 必須指向建置的輸出目錄
+    # 
+    docPath: '$(System.DefaultWorkingDirectory)/dist/demo' # 假設專案名稱為 'demo'
+    
     githubusername: 'ShawnYen1123'
     githubemail: 'yrs791123@hotmail.com'
-    githubaccesstoken: '$(token)'
+    githubaccesstoken: '$(token)' 
     repositoryname: 'demo'
     branchname: 'gh-pages'
-    commitmessage: 'Automated Release $(Release.ReleaseId)'
+    
+    # 
+    # (修正 4) 修正 Commit Message 的變數
+    # 
+    commitmessage: 'Automated Deploy from Build $(Build.BuildNumber)'
