@@ -29,9 +29,19 @@ steps:
 # ======================================================
 # CD 步驟: 部署到 GitHub Pages
 # ======================================================
+
+- script: |
+    echo "--- Debug Information ---"
+    echo "Build Number: $(Build.BuildNumber)"
+    echo "Source Branch: $(Build.SourceBranchName)"
+    echo "Working Directory: $(System.DefaultWorkingDirectory)"
+    echo "--------------------------"
+  displayName: 'Print System Variables'
+
+
 - task: GitHubPagesPublish@1
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)/demo' # 假設專案名稱為 'demo'
+    docPath: '$(System.DefaultWorkingDirectory)/dist/demo' # 假設專案名稱為 'demo'
     
     githubusername: 'ShawnYen1123'
     githubemail: 'yrs791123@hotmail.com'
