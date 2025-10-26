@@ -13,12 +13,18 @@ steps:
     versionSpec: '18.x' # Angular v16 必須使用 16.x 或 18.x。
   displayName: 'Install Node.js 18.x' 
 
-# ======================================================
-# CI 步驟
-# ======================================================
-- script: |
-    ng build --configuration=production --base-href /demo/
-  displayName: 'Build Angular App'
+
+# (步驟 1: 安裝依賴)
+- script: npm ci
+  displayName: '1. Install Dependencies (npm ci)'
+
+# (步驟 2: 建置專案)
+#
+# (!!!) 如果這一步失敗，請點開 Log 並貼上紅字錯誤 (!!!)
+#
+- script: npx ng build --configuration=production --base-href /demo/
+  displayName: '2. Build Angular App (npx ng build)'
+
 
 # ======================================================
 # CD 步驟: 部署到 GitHub Pages
