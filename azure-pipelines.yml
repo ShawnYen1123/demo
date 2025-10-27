@@ -2,7 +2,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest' # 推薦使用 'ubuntu-latest'，它更快
+  vmImage: 'windows-latest' # 也可使用 'ubuntu-latest'，更快
 
 steps:
 # ======================================================
@@ -19,9 +19,6 @@ steps:
   displayName: '1. Install Dependencies (npm ci)'
 
 # (步驟 2: 建置專案)
-#
-# (!!!) 如果這一步失敗，請點開 Log 並貼上紅字錯誤 (!!!)
-#
 - script: npx ng build --configuration=production --base-href /demo/
   displayName: '2. Build Angular App (npx ng build)'
 
@@ -30,6 +27,8 @@ steps:
 # CD 步驟: 部署到 GitHub Pages
 # ======================================================
 
+
+# 印出資訊 (debug用)
 - script: |
     echo "--- Debug Information ---"
     echo "Build Number: $(Build.BuildNumber)"
@@ -41,15 +40,11 @@ steps:
 
 - task: GitHubPagesPublish@1
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)/dist/demo/*' # 假設專案名稱為 'demo'
+    docPath: '$(System.DefaultWorkingDirectory)/dist/demo/*'
     
     githubusername: 'ShawnYen1123'
     githubemail: 'shawnyen@hotmail.com'
     githubaccesstoken: '$(token)' 
     repositoryname: 'demo'
     branchname: 'gh-pages'
-    
-    # 
-    # (修正 4) 修正 Commit Message 的變數
-    # 
     commitmessage: 'Automated Deploy from Build $(Build.BuildNumber)'
