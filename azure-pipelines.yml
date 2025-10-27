@@ -40,7 +40,7 @@ steps:
 
 - task: GitHubPagesPublish@1
   inputs:
-    docPath: '$(System.DefaultWorkingDirectory)/dist/demo/*'
+    docPath: '$(System.DefaultWorkingDirectory)/dist/demo/*' # * 的意思是抓取該資料夾下的所有內容而已，而非連同demo資料夾本身一起。
     
     githubusername: 'ShawnYen1123'
     githubemail: 'shawnyen@hotmail.com'
