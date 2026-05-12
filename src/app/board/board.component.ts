@@ -234,7 +234,7 @@ export class BoardComponent {
     }
   }
   download() {
-    this.fileService.downloadFile('messageList.json');
+    this.fileService.downloadFile('messageList.json'); //已無效
   }
 
 }

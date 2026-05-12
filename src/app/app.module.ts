@@ -24,6 +24,7 @@ import { BoardComponent } from './board/board.component';
 import { IndexComponent } from './index/index.component';
 import { StockComponent } from './stock/stock.component';
 import { HttpClientModule } from '@angular/common/http';
+import { CdkeyComponent } from './cdkey/cdkey.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppComponent,
     BoardComponent,
     IndexComponent,
-    StockComponent
+    StockComponent,
+    CdkeyComponent
   ],
   imports: [
     BrowserModule,

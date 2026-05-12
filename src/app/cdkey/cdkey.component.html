@@ -1,0 +1,26 @@
+<div *ngIf="!isLoading" style="text-align: center;">
+  <h1>POE交易輔助器序號</h1>
+  <div>
+    <input type="text" [(ngModel)]="machineNumber" pInputText placeholder="請輸入機碼" />&nbsp;&nbsp;&nbsp;
+    <p-button label="取得" (onClick)="getCdKey()" [disabled]="machineNumber === ''"></p-button>&nbsp;&nbsp;
+  </div>
+  <div style="margin-top: 120px">
+
+  </div>
+  <div *ngIf="cdkeyNumber !== ''">
+    <p-panel>
+      <p>
+        {{cdkeyNumber}}
+      </p>
+    </p-panel>
+  </div>
+</div>
+<div *ngIf="isLoading" style="text-align: center;">
+  <h2>網頁讀取中</h2>
+  <p-progressSpinner></p-progressSpinner>
+</div>
+<div style="margin-top: 200px">
+
+</div>
+
+<p-toast position="bottom-right"></p-toast>
