@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Message, MessageForShow, PageEvent } from './BoardInterface';
 import { MessageService } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
-import { FileServiceService } from '../service/file-service.service';
 
 @Component({
   selector: 'app-board',
@@ -10,89 +9,140 @@ import { FileServiceService } from '../service/file-service.service';
   styleUrls: ['./board.component.css'],
   providers: [MessageService]
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit {
   isLoading = false;
-  date: Date = new Date;
-  /*
-  mokeMessageList: Message[] = [
-    {
-      title: '範例標題一',
-      content: '範例內容一',
-      date: new Date
-    },
-    {
-      title: '範例標題二',
-      content: '範例內容二',
-      date: new Date
-    },
-    {
-      title: '範例標題三',
-      content: '範例內容三',
-      date: new Date
-    },
-    {
-      title: '範例標題四',
-      content: '範例內容四',
-      date: new Date
-    },
-    {
-      title: '範例標題五',
-      content: '範例內容五',
-      date: new Date
-    }];
-   */
-
   messageList: Message[] = [];
   contentInput: string = '';
   titleInput: string = '';
   isCreate = false;
   isEdit = false;
   editIndex = -1;
-  stringFromBrowser = '';
+
   pageData: PageEvent = {
-    first: 0, //起始index
-    rows: 5, //一頁有幾個
+    first: 0,
+    rows: 5,
     page: 0,
     pageCount: 1
   };
   messageListForShow: MessageForShow[] = [];
 
-  constructor(private messageService: MessageService, private http: HttpClient, private fileService: FileServiceService) { }
+  // API 基礎網址設定
+  private apiUrl = 'https://shawnyendemo.onrender.com/api/MessageList';
+
+  constructor(private messageService: MessageService, private http: HttpClient) { }
 
   ngOnInit(): void {
     this.getInitDataFromServer();
   }
 
-  createMessage() {
-    this.isEdit = false;
-    this.isCreate = true;
-    this.titleInput = '';
-    this.contentInput = '';
+  // ==== 取得資料 (GET) ====
+  getInitDataFromServer() {
+    this.isLoading = true;
+    this.http.get<Message[]>(this.apiUrl).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.messageList = response;
+        this.calculatePagination(); // 抽出分頁計算邏輯
+        this.getMessageListForShow();
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('取得資料失敗:', err);
+        this.showToast('error', '無法取得留言資料');
+      }
+    });
   }
 
+  // ==== 新增留言 (POST) ====
   confirm() {
     if (this.titleInput.trim() == '' || this.contentInput.trim() == '') {
       this.showToast('info', '標題及內容不得為空白');
       return;
     }
-    this.messageList.unshift({
+
+    this.isLoading = true;
+    const requestMessage = {
       title: this.titleInput,
       content: this.contentInput,
       date: (new Date).toISOString()
+    };
+
+    this.http.post<Message>(this.apiUrl, requestMessage).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.isCreate = false;
+        this.showToast('success', '留言新增成功');
+        this.getInitDataFromServer(); // 新增成功後，重新向資料庫拉取最新列表
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showToast('error', '新增失敗');
+        console.error(err);
+      }
     });
-    this.isCreate = false;
-    this.setDataToBrowser('create');
   }
 
-  cancel() {
-    this.isCreate = false;
+  // ==== 編輯留言 (PUT) ====
+  confirmEdit() {
+    if (this.titleInput.trim() == '' || this.contentInput.trim() == '') {
+      this.showToast('info', '標題及內容不得為空白');
+      return;
+    }
+
+    const targetMessage = this.messageList[this.editIndex];
+    if (!targetMessage.id) return; // 安全機制：確保這筆資料有資料庫的 Id
+
+    this.isLoading = true;
+    const updateRequest = {
+      ...targetMessage, // 保留原本的 Id
+      title: this.titleInput,
+      content: this.contentInput,
+      date: (new Date).toISOString()
+    };
+
+    // 發送 PUT 請求，網址帶上資料庫 Id
+    this.http.put(`${this.apiUrl}/${targetMessage.id}`, updateRequest, { responseType: 'text' }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.isEdit = false;
+        this.showToast('success', '留言編輯成功');
+        this.getInitDataFromServer(); // 更新畫面
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showToast('error', '編輯失敗');
+        console.error(err);
+      }
+    });
+  }
+
+  // ==== 刪除留言 (DELETE) ====
+  deleteMessage(index: number) {
+    const targetId = this.messageList[index].id;
+    if (!targetId) return;
+
+    this.isLoading = true;
+    // 發送 DELETE 請求，網址帶上資料庫 Id
+    this.http.delete(`${this.apiUrl}/${targetId}`, { responseType: 'text' }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.showToast('success', '留言刪除成功');
+        this.getInitDataFromServer(); // 更新畫面
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.showToast('error', '刪除失敗');
+        console.error(err);
+      }
+    });
+  }
+
+  // --- UI操作相關方法---
+  createMessage() {
     this.isEdit = false;
+    this.isCreate = true;
     this.titleInput = '';
     this.contentInput = '';
-  }
-
-  showToast(type: string, content: string) {
-    this.messageService.add({ severity: type, summary: 'Success', detail: content });
   }
 
   edit(index: number) {
@@ -103,116 +153,23 @@ export class BoardComponent {
     this.editIndex = index;
   }
 
-  confirmEdit() {
-    if (this.titleInput.trim() == '' || this.contentInput.trim() == '') {
-      this.showToast('info', '標題及內容不得為空白');
-      return;
-    }
-    this.messageList[this.editIndex].content = this.contentInput;
-    this.messageList[this.editIndex].date = (new Date).toISOString();
-    this.messageList[this.editIndex].title = this.titleInput;
+  cancel() {
+    this.isCreate = false;
     this.isEdit = false;
-    this.setDataToBrowser('edit');
+    this.titleInput = '';
+    this.contentInput = '';
   }
 
-  deleteMessage(index: number) {
-    this.messageList.splice(index, 1);
-    this.setDataToBrowser('delete');
+  showToast(type: string, content: string) {
+    this.messageService.add({ severity: type, summary: 'System', detail: content });
   }
 
-  setDataToBrowser(type: string) {
-    const request: Message[] = this.messageList;
-    this.isLoading = true;
-    console.log(request);
-    this.http.post<string>('https://shawnyendemo.onrender.com/api/MessageList', request).subscribe(
-      () => {
-        this.isLoading = false;
-        if (type === 'create') {
-          this.showToast('success', '留言新增成功');
-        } else if (type === 'delete') {
-          this.showToast('success', '留言刪除成功');
-        } else {
-          this.showToast('success', '留言編輯成功');
-        }
-        this.getMessageListForShow();
-      },
-      (error) => {
-        console.error('發生錯誤:', error);
-        this.isLoading = false;
-        if (type === 'create') {
-          this.showToast('info', '新增失敗');
-        } else if (type === 'delete') {
-          this.showToast('info', '刪除失敗');
-        } else {
-          this.showToast('info', '編輯失敗');
-        }
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-        this.getInitDataFromServer(); // 新刪修失敗就重新撈初始資料
-      }
-    );
-
-    /*
-    let data = JSON.stringify(this.messageList);
-    localStorage.setItem('message', data);
-    this.isLoading = false;
-    if (type === 'create') {
-      this.showToast('success', '留言新增成功');
-    } else if (type === 'delete') {
-      this.showToast('success', '留言刪除成功');
-    } else {
-      this.showToast('success', '留言編輯成功');
-    }
-    this.getMessageListForShow();
-
-    */
-  }
-
-  getInitDataFromServer() {
-
-    this.isLoading = true;
-    this.http.get<Message[]>('https://shawnyendemo.onrender.com/api/MessageList').subscribe(
-      (response) => {
-        this.isLoading = false;
-        this.messageList = response;
-        // 初始設定分頁資訊
-        const itemNumbers = this.messageList.length;
-        if (itemNumbers % this.pageData.rows === 0) {
-          this.pageData.pageCount = itemNumbers % this.pageData.rows;
-        } else {
-          this.pageData.pageCount = itemNumbers % this.pageData.rows + 1;
-        }
-        this.getMessageListForShow();
-      },
-      (error) => {
-        console.error('發生錯誤:', error);
-        this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-      }
-    );
-
-    /*
-    const data = localStorage.getItem('message');
-    console.log(data);
-    if (data === null) {
-      this.messageList = this.mokeMessageList;
-    } else {
-      const messageList = JSON.parse(data);
-      console.log(messageList, '14564646');
-      if (messageList.length === 0) {
-        this.messageList = this.mokeMessageList;
-      } else {
-        this.messageList = messageList;
-      }
-    }
-
-    this.isLoading = false;
-
-    this.getMessageListForShow();
-    */
+  calculatePagination() {
+    const itemNumbers = this.messageList.length;
+    this.pageData.pageCount = Math.ceil(itemNumbers / this.pageData.rows) || 1;
   }
 
   onPageChange(event: any) {
-    console.log(event);
     this.pageData.first = event.first;
     this.pageData.page = event.page;
     this.getMessageListForShow();
@@ -220,21 +177,16 @@ export class BoardComponent {
 
   getMessageListForShow() {
     this.messageListForShow = [];
-    //處理分頁後呈現的資料
     for (let i = this.pageData.first; i <= this.pageData.first + this.pageData.rows - 1; i++) {
       if (this.messageList[i]) {
         const messageForShow: MessageForShow = {
           title: this.messageList[i].title,
           content: this.messageList[i].content,
           date: this.messageList[i].date,
-          id: i
+          id: i // 這是用於畫面呈現的 index
         };
         this.messageListForShow.push(messageForShow);
       }
     }
   }
-  download() {
-    this.fileService.downloadFile('messageList.json'); //已無效
-  }
-
 }
