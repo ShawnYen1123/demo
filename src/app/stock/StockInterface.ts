@@ -1,4 +1,5 @@
 export interface Stock{
+  id?: number;
   stockName:string;
   stockId:string;
 }

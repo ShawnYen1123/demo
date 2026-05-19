@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Stock, StockInfoData } from './StockInterface';
 import { MessageService } from 'primeng/api';
 import { HttpClient } from '@angular/common/http';
@@ -10,154 +10,142 @@ import { FileServiceService } from '../service/file-service.service';
   styleUrls: ['./stock.component.css'],
   providers: [MessageService]
 })
-export class StockComponent {
+export class StockComponent implements OnInit {
   isLoading = false;
   newStock = '';
   selectedStock: any[] = [];
   isChooseAll = false;
   stockInfoDatas: StockInfoData[] = [];
-
-  mokeStockList: Stock[] = [
-    { stockName: '台泥', stockId: '1101' },
-    { stockName: '聯電', stockId: '2303' },
-    { stockName: '鴻海', stockId: '2317' },
-    { stockName: '友達', stockId: '2409' },
-    { stockName: '精技', stockId: '2414' },
-    { stockName: '長榮', stockId: '2603' },
-    { stockName: '陽明', stockId: '2609' },
-    { stockName: '英濟', stockId: '3294' },
-    { stockName: '鈺創', stockId: '5351' }
-  ]
   stockList: Stock[] = [];
 
+  // API 基礎網址
+  private apiUrl = 'https://shawnyendemo.onrender.com/api/StockList';
 
-  constructor(private messageService: MessageService, private http: HttpClient, private fileService: FileServiceService) { }
+  constructor(
+    private messageService: MessageService, 
+    private http: HttpClient, 
+    private fileService: FileServiceService
+  ) { }
 
   ngOnInit(): void {
-    this.getDataFromBrowser();
+    this.getDataFromDatabase();
   }
 
+  // ==== 取得資料 (GET) ====
+  getDataFromDatabase() {
+    this.isLoading = true;
+    this.http.get<Stock[]>(this.apiUrl).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        this.stockList = response;
+      },
+      error: (err) => {
+        console.error('發生錯誤:', err);
+        this.isLoading = false;
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: '無法取得股票清單' });
+      }
+    });
+  }
+
+  // ==== 新增股票 (POST) ====
   createStock() {
     const id = this.newStock.substring(0, 4).trim();
     const name = this.newStock.substring(4).trim();
     const idRegex = /^\d{4}$/;
     const nameRegex = /^[\u4e00-\u9fa5]+$/;
 
-    const codeMatch = id.match(idRegex);
-    const nameMatch = name.match(nameRegex);
-
-    if (codeMatch === null || nameMatch === null) {
+    if (!id.match(idRegex) || !name.match(nameRegex)) {
       this.messageService.add({ severity: 'info', summary: 'info', detail: '輸入請遵循格式(ex:2303聯電)' });
-    } else {
-      this.stockList.push({ stockName: name, stockId: id });
-      this.setDataToBrowser();
-      this.messageService.add({ severity: 'info', summary: 'success', detail: '股票新增成功' });
-      this.newStock = '';
+      return;
     }
+
+    this.isLoading = true;
+    const requestStock = { stockId: id, stockName: name };
+
+    this.http.post<Stock>(this.apiUrl, requestStock).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.messageService.add({ severity: 'success', summary: 'success', detail: '股票新增成功' });
+        this.newStock = '';
+        this.getDataFromDatabase(); // 新增後重新拉取清單
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+        const errorMsg = err.status === 409 ? '此股票已經在追蹤清單中' : '新增失敗';
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: errorMsg });
+      }
+    });
   }
 
+  // ==== 刪除股票 (DELETE) ====
   deleteStock(index: number) {
-    this.stockList.splice(index, 1);
-    this.setDataToBrowser();
-    this.messageService.add({ severity: 'info', summary: 'success', detail: '股票刪除成功' });
+    // 這裡使用資料庫產生的整數 id 來進行刪除
+    const targetId = this.stockList[index].id; 
+    
+    if (!targetId) {
+      console.error('找不到這檔股票的資料庫 Id');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: '資料異常，無法刪除' });
+      return;
+    }
+
+    this.isLoading = true;
+    this.http.delete(`${this.apiUrl}/${targetId}`, { responseType: 'text' }).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.messageService.add({ severity: 'success', summary: 'success', detail: '股票刪除成功' });
+        this.getDataFromDatabase(); // 刪除後重新拉取清單
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: '刪除失敗' });
+      }
+    });
   }
 
   chooseAll() {
     if (this.isChooseAll) {
-      this.selectedStock = this.stockList;
+      this.selectedStock = [...this.stockList];
     } else {
       this.selectedStock = [];
     }
   }
 
+  // 爬蟲取得股票資訊API---
   getStockInfo() {
-    if (this.selectedStock.length === 0) {
-      return;
-    }
-    const request: Stock[] = this.selectedStock;
+    if (this.selectedStock.length === 0) return;
     this.isLoading = true;
-    this.http.post<any>('https://shawnyendemo.onrender.com/api/StockInfo', request).subscribe(
-      (response) => {
+    this.http.post<any>('https://shawnyendemo.onrender.com/api/StockInfo', this.selectedStock).subscribe({
+      next: (response) => {
         this.isLoading = false;
         this.stockInfoDatas = response;
       },
-      (error) => {
+      error: (error) => {
         console.error('發生錯誤:', error);
         this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error });
       }
-    );
-
+    });
   }
-
-  setDataToBrowser() {
-    const request: Stock[] = this.stockList;
+  // 通知API
+  notifyStockInfo() {
+    if (this.selectedStock.length === 0) return;
     this.isLoading = true;
-    console.log(request);
-    // this.http.post<string>('https://shawnyendemo.onrender.com/api/StockList', request).subscribe(
-    //   () => {
-    //     this.isLoading = false;
-    //     this.getDataFromBrowser();
-    //   },
-    //   (error) => {
-    //     console.error('發生錯誤:', error);
-    //     this.isLoading = false;
-    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-    //   }
-    // );
-    let data = JSON.stringify(this.stockList);
-    localStorage.setItem('stock', data);
-    this.isLoading = false;
-  }
-
-  getDataFromBrowser() {
-    this.isLoading = true;
-    // this.http.get<Stock[]>('https://shawnyendemo.onrender.com/api/StockList').subscribe(
-    //   (response) => {
-    //     this.isLoading = false;
-    //     this.stockList = response;
-    //   },
-    //   (error) => {
-    //     console.error('發生錯誤:', error);
-    //     this.isLoading = false;
-    //     this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
-    //   }
-    // );
-
-    const data = localStorage.getItem('stock');
-    if (data === null) {
-      this.stockList = this.mokeStockList;
-    } else {
-      const messageList = JSON.parse(data);
-      if (messageList.length === 0) {
-        this.stockList = this.mokeStockList;
-      } else {
-        this.stockList = messageList;
-      }
-    }
-    this.isLoading = false;
-  }
-
-  download(){
-    this.fileService.downloadFile('stockList.json');
-  }
-
-  notifyStockInfo(){
-    if (this.selectedStock.length === 0) {
-      return;
-    }
-    const request: Stock[] = this.selectedStock;
-    this.isLoading = true;
-    this.http.post('https://shawnyendemo.onrender.com/api/StockInfoNotify', request, { responseType: 'text' }).subscribe(
-      () => {
+    this.http.post('https://shawnyendemo.onrender.com/api/StockInfoNotify', this.selectedStock, { responseType: 'text' }).subscribe({
+      next: () => {
         this.isLoading = false;
         this.messageService.add({ severity: 'success', summary: 'success', detail: "傳送成功" });
       },
-      (error) => {
+      error: (error) => {
         console.error('發生錯誤:', error);
         this.isLoading = false;
-        this.messageService.add({ severity: 'info', summary: 'info', detail: error.error });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.error });
       }
-    );
+    });
+  }
+
+  download() {
+    this.fileService.downloadFile('stockList.json'); 
   }
 }
